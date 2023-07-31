@@ -1,0 +1,7 @@
+
+GET: /categories - 27/07/2023: {} - ReferenceError: HttpResponese is not defined
+PUT: /user/1690364136562 - 27/07/2023: {"name":"Yasuoo"} - Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+DELETE: /user/1690364136562 - 27/07/2023: {} - Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+PUT: /user/1690365298826 - 27/07/2023: {"name":"Yasuoo"} - Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+PUT: /user/1690365298826 - 27/07/2023: {"name":"Yasuoo"} - Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+GET: / - 27/07/2023: {} - Error: Failed to lookup view "home" in views directory "/Users/longdc/Desktop/spavedev-learn/src/views"

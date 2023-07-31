@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import PushpinOutlined from "@ant-design/icons/PushpinOutlined";
 import { ClockCircleOutlined } from "@ant-design/icons";
-import { Avatar, Button, Dropdown, Skeleton, message } from "antd";
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  Skeleton,
+  message,
+  Tag,
+  Tooltip,
+} from "antd";
 import { cn } from "@/utils";
 import { PopupNewTask } from "@/components/PopupNewTask";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -30,11 +38,11 @@ export const Home = () => {
           Array.from(new Array(5)).map((_, i) => (
             <Skeleton.Input key={i} style={{ width: "100%", height: 150 }} />
           ))}
-        {data?.map((item) => (
+        {data?.data?.map((item) => (
           <ToDoCard
             key={item.id}
             item={item}
-            className="bg-blue-50"
+            className={`bg-[${item?.color}]`}
             setItem={setItem}
             setOpenCreate={setOpenCreate}
           />
@@ -50,7 +58,7 @@ export const Home = () => {
   );
 };
 
-const ToDoCard = ({ item, className, setItem, setOpenCreate }) => {
+const ToDoCard = ({ item, className, setItem, setOpenCreate, color }) => {
   const { title, description, id } = item;
   const { mutate } = useMutation({
     onMutate: () => {
@@ -68,10 +76,13 @@ const ToDoCard = ({ item, className, setItem, setOpenCreate }) => {
     },
   });
   return (
-    <div className={cn("p-4 rounded-lg relative", className)}>
-      <h3 className="text-lg font-[600] flex items-center justify-between">
-        <span>{title}</span>
-        <Avatar className="mr-4" size={40} src="https://placehold.co/100x100" />
+    <div
+      style={{ background: `${item?.color}10` }}
+      className={cn("p-4 rounded-lg relative", className)}
+    >
+      <h3 className="text-lg font-[600] flex items-center">
+        <span className="mr-2">{title}</span>
+        <Tag color={item?.category?.color}>{item?.category?.name}</Tag>
       </h3>
       <p className="text-sm text-gray-500 mt-1">{description}</p>
       <div className="text-blue-400 cursor-pointer mt-2 pb-3 border-0 border-solid border-b border-gray-300">
@@ -83,8 +94,14 @@ const ToDoCard = ({ item, className, setItem, setOpenCreate }) => {
         </div>
         <div>
           <Avatar.Group>
-            <Avatar size={35} src="https://placehold.co/100x100" />
-            <Avatar size={35} src="https://placehold.co/100x100" />
+            {item?.users?.map((item) => (
+              <Tooltip key={item.id} title={item?.name}>
+                <Avatar
+                  size={35}
+                  src={item.avatar || `https://placehold.co/100x100`}
+                />
+              </Tooltip>
+            )) || []}
           </Avatar.Group>
         </div>
       </div>
@@ -104,7 +121,7 @@ const ToDoCard = ({ item, className, setItem, setOpenCreate }) => {
           ],
         }}
       >
-        <i className="absolute top-2 right-2 cursor-pointer">
+        <i className="absolute top-4 right-4 cursor-pointer">
           <IconDot with={14} />
         </i>
       </Dropdown>

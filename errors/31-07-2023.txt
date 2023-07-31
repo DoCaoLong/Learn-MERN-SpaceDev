@@ -1,0 +1,66 @@
+
+POST: /file/upload - 31/07/2023: {} - ReferenceError: HttpResponse is not defined
+POST: /file/upload - 31/07/2023: {} - ReferenceError: HttpResponse is not defined
+POST: /file/uploads - 31/07/2023: {} - MulterError: Unexpected field
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /categories - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /task - 31/07/2023: {} - Not allow
+GET: /user - 31/07/2023: {} - Not allow
+POST: /user/register - 31/07/2023: {"name":"","avatar":"","email":"","password":""} - ValidationError: Password của bạn không đủ mạnh
+POST: /user/register - 31/07/2023: {"name":"","avatar":"","email":"","password":"12313"} - ValidationError: Password của bạn không đủ mạnh

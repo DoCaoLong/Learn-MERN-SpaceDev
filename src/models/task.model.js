@@ -17,16 +17,32 @@ const find = (query) => {
 
 const findById = (id) => {
   let t = tasks.find((item) => item.id === +id);
-  return {
-    ...t,
-    category: t.category ? Category.findById(t.category) : null,
-    users: Array.isArray(t.users) ? User.findByIds(t.users) : null,
-  };
+  if (t) {
+    return {
+      ...t,
+      category: t.category ? Category.findById(t.category) : null,
+      users: Array.isArray(t.users) ? User.findByIds(t.users) : null,
+    };
+  }
+  return false;
 };
 
 const create = (data) => {
-  console.log(data);
   data.id = new Date().getTime();
+  if (data.category) {
+    let checkCate = Category.findById(data.category);
+    // check category
+    if (!checkCate) {
+      throw "Category not found";
+    }
+    // check users
+    if (Array.isArray(data.users)) {
+      let check = User.findByIds(data.users).length === data.users.length;
+      if (!check) {
+        throw "User not found";
+      }
+    }
+  }
   tasks.push(data);
   writeJsonFile("tasks", tasks);
   return data;
@@ -43,11 +59,15 @@ const updateById = (id, dataUpdate) => {
 };
 
 const patchById = (id, dataUpdate) => {
-  let { title, description } = dataUpdate;
+  let { title, description, users, category, color } = dataUpdate;
+  console.log(users);
   let t = tasks.find((item) => item.id === +id);
   if (t) {
     t.title = title ?? t.title;
     t.description = description ?? t.description;
+    t.users = users ?? t.users;
+    t.category = category ?? t.category;
+    t.color = color ?? t.color;
     writeJsonFile("tasks", tasks);
     return true;
   }
@@ -64,7 +84,7 @@ const deleteById = (id) => {
   return false;
 };
 
-export const Tasks = {
+export const Task = {
   find,
   findById,
   create,

@@ -1,0 +1,2 @@
+
+PATCH: /task/1690273677675 - 30/07/2023: {"title":"Công việc 1","color":"#ffffff","category":1690627354417,"users":[],"description":"Lau nhà"} - ValidationError: "color" is not allowed

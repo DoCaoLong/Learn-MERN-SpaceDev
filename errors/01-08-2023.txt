@@ -1,0 +1,6 @@
+
+POST: /user/register - 01/08/2023: {"password":"12313"} - ValidationError: Password của bạn không đủ mạnh
+POST: /user/register - 01/08/2023: {"password":"12313a"} - ValidationError: Password của bạn không đủ mạnh
+POST: /user/register - 01/08/2023: {"name":"long","password":"12313aAlong"} - ValidationError: Không được chứa tên trong pasword
+PUT: /user/1690273630295 - 01/08/2023: {} - SyntaxError: Unexpected end of JSON input
+PUT: /user/1690273630295 - 01/08/2023: {} - SyntaxError: Unexpected end of JSON input

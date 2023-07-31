@@ -1,0 +1,12 @@
+
+GET: / - 29/07/2023: {} - Error: Failed to lookup view "home" in views directory "/Users/longdc/Desktop/spavedev-learn/views"
+GET: / - 29/07/2023: {} - Error: Failed to lookup view "home" in views directory "/Users/longdc/Desktop/spavedev-learn/views"
+GET: / - 29/07/2023: {} - Error: Failed to lookup view "home" in views directory "/Users/longdc/Desktop/spavedev-learn/views"
+GET: /courses - 29/07/2023: {} - Error: Failed to lookup view "course" in views directory "/Users/longdc/Desktop/spavedev-learn/src/views"
+POST: /task - 29/07/2023: {"title":"task new ne","description":"desc new ne"} - ValidationError: "category" is required
+POST: /task - 29/07/2023: {"title":"123","description":"123"} - ValidationError: "category" is required
+POST: /task - 29/07/2023: {"title":"new ","description":"new"} - ValidationError: "category" is required
+POST: /task - 29/07/2023: {"title":"d2","description":"d3"} - ValidationError: "category" is required
+POST: /task - 29/07/2023: {} - SyntaxError: Unexpected token } in JSON at position 76
+POST: /task - 29/07/2023: {"title":"task new","category":"longlowkey","description":"desc long lowkey"} - ValidationError: Không tìm thấy category
+POST: /task - 29/07/2023: {"title":"taskkk newww","category":1690627354417,"user":[1690273621469,1690273634968],"description":"new tasksss"} - ValidationError: "user" is not allowed

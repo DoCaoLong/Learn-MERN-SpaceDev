@@ -23,7 +23,6 @@ const create = (data) => {
 };
 
 const updateById = (id, dataUpdate) => {
-  console.log(dataUpdate);
   let c = users.find((item) => item.id === +id);
   if (c) {
     Object.assign(c, dataUpdate);

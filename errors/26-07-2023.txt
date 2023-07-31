@@ -1,0 +1,16 @@
+
+POST: /task - 26/07/2023: {"title":"Work 5","description":"Description work 5","category":"16902684590541","users":[1690273621469,1690273630295]} - Category not found
+POST: /task - 26/07/2023: {"title":"Work 5","description":"Description work 5","category":"1690268459054","users":[16902736214691,1690273630295]} - User not found
+POST: /task - 26/07/2023: {"description":"Description work 5","category":"1690268459054","users":[1690273621469,1690273630295]} - ValidationError: "title" is required
+POST: /task - 26/07/2023: {"title":"Work 5","description":"Description work 5","category":"1690268459054e","users":[1690273621469,1690273630295]} - ValidationError: "users" is not allowed
+POST: /task - 26/07/2023: {"title":"Work 5","description":"Description work 5","category":"1690268459054e","users":[169027362146,1690273630295]} - ValidationError: "users" is not allowed
+POST: /task - 26/07/2023: {"title":"Work 5","description":"Description work 5","category":"16902684590541","users":[169027362146,1690273630295]} - ValidationError: Không tìm thấy category
+POST: /task - 26/07/2023: {"title":"Work 5","description":"Description work 5","category":"1690268459054","users":[169027362146,1690273630295]} - ValidationError: Không tìm thấy user
+PATCH: /task/1690365004206 - 26/07/2023: {"description":"Description newww 6"} - ValidationError: "title" is required
+PATCH: /task/1690365004206 - 26/07/2023: {"users":[1690273630295,1690273634968]} - ValidationError: "title" is required
+PATCH: /task/1690365004206 - 26/07/2023: {"users":[1690273630295,16902736349681]} - ValidationError: Không tìm thấy user
+PATCH: /task/1690365004206 - 26/07/2023: {"users":[1690365298826,1690365298826]} - ValidationError: Không tìm thấy user
+PATCH: /task/1690365004206 - 26/07/2023: {"users":[1690365298826,1690365298826]} - ValidationError: Không tìm thấy user
+POST: /task - 26/07/2023: {"description":"Description work 6","category":"1690268459054","users":[1690364136562,1690273630295]} - ValidationError: "title" is required
+POST: /task - 26/07/2023: {"description":"Description work 6","category":"1690268459054","users":[1690364136562,1690273630295]} - ValidationError: "title" is required
+POST: /file/upload - 26/07/2023: {} - MulterError: Unexpected field
