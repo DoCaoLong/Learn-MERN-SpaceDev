@@ -17,6 +17,7 @@ import { NotFound } from "./src/config/statusCode";
 import { pageRouter } from "./src/routes/page.route";
 import handlebars from "express-handlebars";
 import { xTokenMiddleware } from "./src/middleware/x-token-middleware";
+import "./src/config/database";
 
 const app = express();
 

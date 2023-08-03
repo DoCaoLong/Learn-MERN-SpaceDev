@@ -64,4 +64,13 @@ export class HttpResponse {
       data,
     };
   }
+
+  static notFound(message = "Không tìm thấy dữ liệu") {
+    return {
+      status: "Error",
+      code: 400,
+      message,
+      error_code: "NOT_FOUND",
+    };
+  }
 }

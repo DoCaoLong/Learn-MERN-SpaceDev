@@ -1,52 +1,71 @@
-import { readJsonFile, writeJsonFile } from "../utils/file";
 import _ from "lodash";
+import { User as UserRepository } from "../config/database";
+import { ObjectId } from "mongodb";
 
-const users = readJsonFile("users") || [];
+const find = async (query) => {
+  let _query = _.omit(query, "name", "age");
 
-const find = (query) => {
-  return _.filter(users, query);
+  if (query.age) {
+    _query.age = query.age;
+  }
+
+  if (query.name) {
+    // c1 search basic
+    // _query.name = { $regex: new RegExp(query.name, "i") }; // "i": k pb hoa thuong
+    // c2 search advance k dau, $text: config ở datadase.js
+    _query.$text = { $search: query.name };
+  }
+
+  return await UserRepository.find(_query).toArray();
 };
 
-const findById = (id) => {
-  return users.find((e) => e.id === parseInt(id));
+const findById = async (id) => {
+  if (ObjectId.isValid(id)) {
+    return await UserRepository.findOne({ _id: new ObjectId(id) });
+  }
+
+  return null;
+  // return users.find((e) => e.id === parseInt(id));
 };
 
 const findByIds = (ids) => {
-  return users.filter((item) => ids.includes(item.id));
+  return users.filter((e) => ids.includes(e.id));
 };
-
-const create = (data) => {
-  data.id = new Date().getTime();
-  users.push(data);
-  writeJsonFile("users", users);
-  return data;
-};
-
-const updateById = (id, dataUpdate) => {
-  let c = users.find((item) => item.id === +id);
-  if (c) {
-    Object.assign(c, dataUpdate);
-    writeJsonFile("users", users);
-    return true;
+const create = async (data) => {
+  const result = await UserRepository.insertOne(data);
+  if (result.insertedId) {
+    data._id = result.insertedId;
+    return data;
   }
   return false;
 };
-
-const deleteById = (id) => {
-  let idx = users.findIndex((item) => item.id === +id);
-  if (idx !== -1) {
-    users.splice(idx, 1);
-    writeJsonFile("users", users);
-    return true;
+const updateById = async (id, dataUpdate) => {
+  if (ObjectId.isValid(id)) {
+    let result = await UserRepository.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: dataUpdate,
+      }
+    );
+    return result.modifiedCount >= 1;
   }
+
+  return false;
+};
+const deleteById = async (id) => {
+  if (ObjectId.isValid(id)) {
+    let result = await UserRepository.deleteOne({ _id: new ObjectId(id) });
+    return result.modifiedCount >= 1;
+  }
+
   return false;
 };
 
 export const User = {
   find,
   findById,
-  findByIds,
   create,
   updateById,
   deleteById,
+  findByIds,
 };

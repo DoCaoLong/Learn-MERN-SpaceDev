@@ -58,7 +58,7 @@ export const Home = () => {
   );
 };
 
-const ToDoCard = ({ item, className, setItem, setOpenCreate, color }) => {
+const ToDoCard = ({ item, className, setItem, setOpenCreate }) => {
   const { title, description, id } = item;
   const { mutate } = useMutation({
     onMutate: () => {

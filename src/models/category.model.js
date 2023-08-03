@@ -1,40 +1,48 @@
-import { readJsonFile, writeJsonFile } from "../utils/file";
 import _ from "lodash";
+import { Category as CategoryRepository } from "../config/database";
+import { ObjectId } from "mongodb";
 
-const categories = readJsonFile("categories") || [];
-
-const find = (query) => {
-  return _.filter(categories, query);
+const find = async (query) => {
+  let _query = _.omit(query, "color");
+  if (query.name) {
+    _query.$text = { $search: query.name };
+  }
+  return await CategoryRepository.find(_query).toArray();
 };
+const findById = async (id) => {
+  if (ObjectId.isValid(id)) {
+    return await CategoryRepository.findOne({ _id: new ObjectId(id) });
+  }
 
-const findById = (id) => {
-  return categories.find((e) => e.id === parseInt(id));
+  return null;
 };
-
-const create = (data) => {
-  data.id = new Date().getTime();
-  categories.push(data);
-  writeJsonFile("categories", categories);
-  return data;
-};
-
-const updateById = (id, dataUpdate) => {
-  let c = categories.find((item) => item.id === +id);
-  if (c) {
-    Object.assign(c, dataUpdate);
-    writeJsonFile("categories", categories);
-    return true;
+const create = async (data) => {
+  const result = await CategoryRepository.insertOne(data);
+  if (result.insertedId) {
+    data._id = result.insertedId;
+    return data;
   }
   return false;
 };
-
-const deleteById = (id) => {
-  let idxCategories = categories.findIndex((item) => item.id === +id);
-  if (idxCategories !== -1) {
-    categories.splice(idxCategories, 1);
-    writeJsonFile("categories", categories);
-    return true;
+const updateById = async (id, dataUpdate) => {
+  if (ObjectId.isValid(id)) {
+    let result = await CategoryRepository.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: dataUpdate,
+      }
+    );
+    return result.modifiedCount >= 1;
   }
+
+  return false;
+};
+const deleteById = async (id) => {
+  if (ObjectId.isValid(id)) {
+    let result = await UserRepository.deleteOne({ _id: new ObjectId(id) });
+    return result.modifiedCount >= 1;
+  }
+
   return false;
 };
 

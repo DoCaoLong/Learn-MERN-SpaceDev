@@ -1,0 +1,3 @@
+
+PATCH: /task/64ca78356f0c83370eafdc82 - 04/08/2023: {"category":"1690990478697"} - ValidationError: "category" failed custom validation because Category.findById is not a function
+PATCH: /task/64ca78356f0c83370eafdc82 - 04/08/2023: {"category":"1690990478697"} - ValidationError: "category" failed custom validation because Category.findById is not a function
