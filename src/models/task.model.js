@@ -1,7 +1,5 @@
-import { Category } from "./category.model";
-import { User } from "./user.model";
 import _ from "lodash";
-import { DEFAULT_LIMIT, Task as TaskRepository } from "../config/database";
+import { Task as TaskRepository } from "../config/database";
 import { ObjectId } from "mongodb";
 
 // phân trang cách 1 (FE handle nhiều hơn)
@@ -22,48 +20,29 @@ const count = async (query) => {
 };
 
 // phân trang cách 2 (khuyên dùng)
-const paginate = async (query, page, perPage, sortBy, sortValue) => {
-  let _query = _.omit(query, "title", "isDone");
-
-  if (query.title) {
-    _query.$text = { $search: query.title };
-  }
-
-  if (query.isDone) {
-    _query.isDone = query.isDone === "true";
-  }
-
-  // perPage: số sản phầm mổi trang
-  let skip = (page - 1) * perPage;
-
-  // tổng số lượng document
-  let count = await TaskRepository.countDocuments(_query);
-
-  // tổng số trang
-  let totalPage = Math.ceil(count / perPage);
-
-  let result = await TaskRepository.find(_query)
-    .limit(+perPage) // số lượng document lấy về
-    .skip(skip) // bỏ qua bao nhiêu document
-    .sort(sortBy, sortValue)
-    .toArray();
-
-  let response = {
-    data: result,
-    totalPage,
-    currentPage: page,
-    total: count,
-  };
-
-  if (page < totalPage) {
-    response.nextPage = page + 1;
-  }
-
-  if (page > 1) {
-    response.prevPage = page - 1;
-  }
-
-  return response;
+const paginate = async (query) => {
+  return TaskRepository.paginate(query, [
+    {
+      $lookup: {
+        from: "categories", // Tên collection cần ghép nối
+        localField: "category", // Trường trong collection "task" tham chiếu đến "category"
+        foreignField: "_id", // Trường trong collection "users" được tham chiếu
+        as: "category", // Tên cho mảng kết quả của ghép nối
+      },
+    },
+    {
+      // Chuyển đổi bảng kết nối thành các bản ghi đơn lẻ (qh 1-1)
+      $unwind: "$category",
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "users",
+        foreignField: "_id",
+        as: "users",
+      },
+    },
+  ]);
 };
 
 const find = async (query) => {
@@ -89,27 +68,13 @@ const findById = async (id) => {
 };
 
 const create = async (data) => {
+  if (data.category) data.category = new ObjectId(data.category);
+  if (Array.isArray(data.users))
+    data.users = data.users.map((e) => new ObjectId(e));
   let result = await TaskRepository.insertOne(data);
   data._id = result.insertedId;
 
   return data;
-
-  // data.id = new Date().getTime();
-  // if(data.category) {
-  //   let check = Category.findById(data.category)
-  //   if(!check) {
-  //     throw "Category not found"
-  //   }
-  // }
-  // if(Array.isArray(data.users)) {
-  //   let check = User.findByIds(data.users).length === data.users.length
-  //   if(!check) {
-  //     throw "User not found"
-  //   }
-  // }
-  // tasks.push(data);
-  // writeJsonFile("tasks", tasks);
-  // return data;
 };
 
 const updateById = async (id, dataUpdate) => {
@@ -118,7 +83,8 @@ const updateById = async (id, dataUpdate) => {
       { _id: new ObjectId(id) },
       { $set: dataUpdate }
     );
-    return result.modifiedCount >= 1;
+    // return result.modifiedCount >= 1;
+    return dataUpdate;
   }
 
   return false;

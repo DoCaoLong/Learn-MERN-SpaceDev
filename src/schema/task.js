@@ -18,6 +18,7 @@ export const updateTaskSchema = Joi.object({
     }),
   color: Joi.string().optional().default("#ffffff"),
   isDone: Joi.boolean().optional().default(false),
+  startDate: Joi.number().optional(),
 });
 
 // kế thừa hàm update và thêm 2 trường là required

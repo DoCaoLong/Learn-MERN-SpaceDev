@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import { initPlugin } from "../utils/mongodb-plugin";
 
 const stringConnect = "mongodb://root:example@localhost:27017";
 
@@ -19,6 +20,13 @@ const main = async () => {
   Task.createIndex({ title: "text" });
   User.createIndex({ name: "text" });
   Category.createIndex({ name: "text" });
+
+  // plugin
+  initPlugin({
+    Task,
+    Category,
+    User,
+  });
 
   return {
     Task,

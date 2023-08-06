@@ -2,6 +2,10 @@ import _ from "lodash";
 import { User as UserRepository } from "../config/database";
 import { ObjectId } from "mongodb";
 
+const paginate = (query) => {
+  return UserRepository.paginate(query);
+};
+
 const find = async (query) => {
   let _query = _.omit(query, "name", "age");
 
@@ -47,7 +51,8 @@ const updateById = async (id, dataUpdate) => {
         $set: dataUpdate,
       }
     );
-    return result.modifiedCount >= 1;
+    // return result.modifiedCount >= 1;
+    return dataUpdate;
   }
 
   return false;
@@ -62,6 +67,7 @@ const deleteById = async (id) => {
 };
 
 export const User = {
+  paginate,
   find,
   findById,
   create,

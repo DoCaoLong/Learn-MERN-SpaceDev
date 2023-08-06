@@ -2,7 +2,6 @@ import _ from "lodash";
 import { BadRequest, Created, NoContent, Success } from "../config/statusCode";
 import { Task } from "../models/task.model";
 import { HttpResponse } from "../utils/HttpResponse";
-import { DEFAULT_LIMIT } from "../config/database";
 
 export const TaskController = {
   count: async (req, res) => {
@@ -15,31 +14,7 @@ export const TaskController = {
   },
 
   get: async (req, res) => {
-    let { page = 1, sort } = req.query;
-    // let categoryName = req.query["category.name"];
-    // let categories = categoryName.split(",");
-    page = parseInt(page); // parseInt vì truyền params là string
-    let _query = _.omit(req.query, "page", "sort", "category.name");
-    let _sort = sort?.split(",") || ["_id", "desc"];
-    let sortBy, sortValue;
-    if (_sort.length === 2) {
-      sortBy = _sort[0];
-      sortValue = _sort[1];
-    } else {
-      // sort custom
-      if (sort === "newwest") {
-        sortBy = ".....";
-        sortValue = "desc";
-      }
-    }
-    // if (categories.length) {
-    //   _query["category.name"] = { $in: categories };
-    // }
-    res.json(
-      HttpResponse.Paginate(
-        await Task.paginate(_query, page, DEFAULT_LIMIT, sortBy, sortValue)
-      )
-    );
+    res.json(HttpResponse.Paginate(await Task.paginate(req.query)));
   },
 
   getDetail: async (req, res) => {
@@ -54,7 +29,8 @@ export const TaskController = {
 
   create: async (req, res, next) => {
     try {
-      const { title, description, category, users, color } = req.body;
+      const { title, description, category, users, color, startDate } =
+        req.body;
       const newTask = {
         title,
         description,
@@ -62,6 +38,7 @@ export const TaskController = {
         users,
         color,
         isDone: false,
+        startDate,
       };
 
       res
@@ -74,7 +51,8 @@ export const TaskController = {
 
   updateById: async (req, res) => {
     const { id } = req.params;
-    const { title, description, category, users, color, isDone } = req.body;
+    const { title, description, category, users, color, isDone, startDate } =
+      req.body;
     let check = await Task.updateById(id, {
       title,
       description,
@@ -82,6 +60,7 @@ export const TaskController = {
       users,
       color,
       isDone,
+      startDate,
     });
     if (check) {
       res.status(Success).json({ Update: true });
@@ -91,20 +70,24 @@ export const TaskController = {
   },
 
   updatePartial: async (req, res) => {
-    const { title, description, users, category, color, isDone } = req.body;
+    const { title, description, users, category, color, isDone, startDate } =
+      req.body;
     const { id } = req.params;
     let task = await Task.findById(id);
     if (task) {
-      res.json({
-        updated: await Task.updateById(id, {
-          title: title ?? task.title,
-          description: description ?? task.description,
-          isDone: isDone ?? task.isDone,
-          users: users ?? task.users,
-          category: category ?? task.category,
-          color: color ?? task.color,
-        }),
-      });
+      res.status(Success).json(
+        HttpResponse.updated(
+          await Task.updateById(id, {
+            title: title ?? task.title,
+            description: description ?? task.description,
+            isDone: isDone ?? task.isDone,
+            users: users ?? task.users,
+            category: category ?? task.category,
+            color: color ?? task.color,
+            startDate: startDate ?? task.startDate,
+          })
+        )
+      );
     } else {
       res.status(BadRequest).json({ error: "Task not found" });
     }

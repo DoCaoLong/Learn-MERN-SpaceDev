@@ -4,9 +4,9 @@ import { HttpResponse } from "../utils/HttpResponse";
 
 export const UserController = {
   get: async (req, res) => {
-    let detail = await User.find(req.query);
-    if (detail && detail.length > 0) {
-      return res.status(Success).json(HttpResponse.success(detail));
+    let detail = await User.paginate(req.query);
+    if (detail) {
+      return res.status(Success).json(HttpResponse.Paginate(detail));
     }
     res.status(BadRequest).json(HttpResponse.error("User not found"));
   },
@@ -31,9 +31,9 @@ export const UserController = {
     const { id } = req.params;
     let check = await User.updateById(id, { name, avatar });
     if (check) {
-      res.status(Success).json(HttpResponse.created(u));
+      res.status(Success).json(HttpResponse.updated(check));
     } else {
-      es.status(BadRequest).json(HttpResponse.error("User not found"));
+      res.status(BadRequest).json(HttpResponse.error("User not found"));
     }
   },
 

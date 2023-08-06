@@ -2,6 +2,10 @@ import _ from "lodash";
 import { Category as CategoryRepository } from "../config/database";
 import { ObjectId } from "mongodb";
 
+const paginate = async (query) => {
+  return CategoryRepository.paginate(query);
+};
+
 const find = async (query) => {
   let _query = _.omit(query, "color");
   if (query.name) {
@@ -47,6 +51,7 @@ const deleteById = async (id) => {
 };
 
 export const Category = {
+  paginate,
   find,
   findById,
   create,

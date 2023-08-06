@@ -1,10 +1,7 @@
 import { Router } from "express";
-import { User } from "../models/user.model";
-import { HttpResponse } from "../utils/HttpResponse";
-import { BadRequest, Success } from "../config/statusCode";
+import { UserController } from "../controllers/user.controller";
 import { validate } from "../middleware/validate.middleware";
 import { registerSchema } from "../schema/user";
-import { UserController } from "../controllers/user.controller";
 
 const userRouter = Router();
 

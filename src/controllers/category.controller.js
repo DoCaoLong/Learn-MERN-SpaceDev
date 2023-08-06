@@ -4,7 +4,11 @@ import { HttpResponse } from "../utils/HttpResponse";
 
 export const CategoryController = {
   get: async (req, res) => {
-    res.json(HttpResponse.Paginate(await Category.find(req.query)));
+    let detail = await Category.paginate(req.query);
+    if (detail) {
+      return res.status(Success).json(HttpResponse.Paginate(detail));
+    }
+    res.status(BadRequest).json(HttpResponse.error("Category not found"));
   },
 
   getDetail: async (req, res) => {
