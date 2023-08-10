@@ -1,10 +1,53 @@
 import _ from "lodash";
-import { Task as TaskRepository } from "../config/database";
-import { ObjectId } from "mongodb";
+import mongoose, { Schema } from "mongoose";
 
-// phân trang cách 1 (FE handle nhiều hơn)
+const TaskSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      index: "text",
+    },
+    description: {
+      type: String,
+      required: true,
+      index: "text",
+    },
+    color: {
+      type: Schema.Types.String,
+    },
+    category: {
+      type: Schema.Types.ObjectId,
+      ref: "Category",
+    },
+    users: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+  },
+  {
+    timestamps: true,
+    methods: {
+      getCategory: async function () {
+        let task = await this.populate("category");
+        return task.category;
+      },
+    },
+    statics: {},
+  }
+);
+
+TaskSchema.index({ title: "text", description: "text" });
+
+const TaskModel = mongoose.model("Task", TaskSchema);
+
+const paginate = async (query) => {
+  return TaskModel.paginate(query);
+};
+
 const count = async (query) => {
-  let _query = _.omit(query, "title", "isDone");
+  let _query = _.omit(query, "title", "isDone", "minStartDate", "maxStartDate");
 
   if (query.title) {
     _query.$text = { $search: query.title };
@@ -14,87 +57,72 @@ const count = async (query) => {
     _query.isDone = query.isDone === "true";
   }
 
-  let count = await TaskRepository.countDocuments(_query);
+  let count = await TaskModel.countDocuments(_query);
 
   return count;
 };
 
-// phân trang cách 2 (khuyên dùng)
-const paginate = async (query) => {
-  return TaskRepository.paginate(query, [
-    {
-      $lookup: {
-        from: "categories", // Tên collection cần ghép nối
-        localField: "category", // Trường trong collection "task" tham chiếu đến "category"
-        foreignField: "_id", // Trường trong collection "users" được tham chiếu
-        as: "category", // Tên cho mảng kết quả của ghép nối
-      },
-    },
-    {
-      // Chuyển đổi bảng kết nối thành các bản ghi đơn lẻ (qh 1-1)
-      $unwind: "$category",
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "users",
-        foreignField: "_id",
-        as: "users",
-      },
-    },
-  ]);
-};
-
-const find = async (query) => {
-  let _query = _.omit(query, "title", "isDone");
-
-  if (query.title) {
-    _query.$text = { $search: query.title };
-  }
-
-  if (query.isDone) {
-    _query.isDone = query.isDone === "true";
-  }
-  let result = await TaskRepository.find(_query).toArray();
-  return result;
-};
+const find = async (query) => {};
 
 const findById = async (id) => {
-  if (ObjectId.isValid(id)) {
-    return await TaskRepository.findOne({ _id: new ObjectId(id) });
+  if (mongoose.isValidObjectId(id)) {
+    try {
+      const task = await TaskModel.findById(id);
+      if (task) {
+        return task;
+      }
+      return false;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
-
-  return null;
+  return false;
 };
 
 const create = async (data) => {
-  if (data.category) data.category = new ObjectId(data.category);
-  if (Array.isArray(data.users))
-    data.users = data.users.map((e) => new ObjectId(e));
-  let result = await TaskRepository.insertOne(data);
-  data._id = result.insertedId;
-
-  return data;
+  try {
+    let task = new TaskModel(data);
+    await task.save();
+    return task;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const updateById = async (id, dataUpdate) => {
-  if (ObjectId.isValid(id)) {
-    let result = await TaskRepository.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: dataUpdate }
-    );
-    // return result.modifiedCount >= 1;
-    return dataUpdate;
+  if (mongoose.isValidObjectId(id)) {
+    try {
+      const result = await TaskModel.updateOne(
+        { _id: id },
+        { $set: dataUpdate }
+      );
+      return dataUpdate;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
-
   return false;
 };
+
 const deleteById = async (id) => {
-  if (ObjectId.isValid(id)) {
-    let result = await TaskRepository.deleteOne({ _id: new ObjectId(id) });
-    return result.deletedCount >= 1;
+  if (mongoose.isValidObjectId(id)) {
+    try {
+      let task = await TaskModel.deleteOne({ _id: id });
+      return task;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
   return false;
+};
+
+const getCategoryById = async (id) => {
+  let task = await TaskModel.findOne({ _id: id });
+  let category = await task.getCategory();
+  return category;
 };
 
 export const Task = {
@@ -105,4 +133,5 @@ export const Task = {
   create,
   updateById,
   deleteById,
+  getCategoryById,
 };

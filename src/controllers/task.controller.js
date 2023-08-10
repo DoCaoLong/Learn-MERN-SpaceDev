@@ -18,11 +18,9 @@ export const TaskController = {
   },
 
   getDetail: async (req, res) => {
-    let detail = Task.findById(req.params.id);
+    let detail = await Task.findById(req.params.id);
     if (detail) {
-      return res
-        .status(Success)
-        .json(HttpResponse.success(await Task.findById(req.params.id)));
+      return res.status(Success).json(HttpResponse.success(detail));
     }
     res.status(BadRequest).json(HttpResponse.error("Task not found"));
   },
@@ -45,7 +43,8 @@ export const TaskController = {
         .status(Created)
         .json(HttpResponse.created(await Task.create(newTask)));
     } catch (err) {
-      next(err);
+      // next(err);
+      next(false);
     }
   },
 
@@ -97,9 +96,15 @@ export const TaskController = {
     const { id } = req.params;
     let check = await Task.deleteById(id);
     if (check) {
-      res.status(NoContent).json({ deleted: true });
+      res.status(NoContent).json(HttpResponse.delete);
     } else {
       res.status(BadRequest).json({ error: "Task not found" });
     }
+  },
+
+  getCategoryById: async (req, res) => {
+    let { id } = req.params;
+    let category = await Task.getCategoryById(id);
+    res.json(HttpResponse.success(category));
   },
 };

@@ -16,7 +16,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/configs/api";
 import { IconDot } from "@/assets/img/iconDot";
 import { queryClient } from "@/main";
-import { LIST_TASK } from "@/configs/queryKey";
+import { LIST_TASK, LIST_CATEGORY } from "@/configs/queryKey";
 export const Home = () => {
   const [openCreate, setOpenCreate] = useState(false);
   const [item, setItem] = useState({});
@@ -38,7 +38,7 @@ export const Home = () => {
           Array.from(new Array(5)).map((_, i) => (
             <Skeleton.Input key={i} style={{ width: "100%", height: 150 }} />
           ))}
-        {data?.data?.map((item) => (
+        {data?.data?.data?.map((item) => (
           <ToDoCard
             key={item.id}
             item={item}
@@ -59,7 +59,7 @@ export const Home = () => {
 };
 
 const ToDoCard = ({ item, className, setItem, setOpenCreate }) => {
-  const { title, description, id } = item;
+  const { title, description, id, key } = item;
   const { mutate } = useMutation({
     onMutate: () => {
       message.loading({ key: id, content: "Đang xoá task..." });
@@ -77,6 +77,7 @@ const ToDoCard = ({ item, className, setItem, setOpenCreate }) => {
   });
   return (
     <div
+      key={item.id}
       style={{ background: `${item?.color}10` }}
       className={cn("p-4 rounded-lg relative", className)}
     >

@@ -12,6 +12,7 @@ taskRouter
   .post("", TaskController.create)
   .put("/:id", TaskController.updateById)
   .patch("/:id", validate(updateTaskSchema), TaskController.updatePartial)
-  .delete("/:id", TaskController.deleteById);
+  .delete("/:id", TaskController.deleteById)
+  .get("/get-category/:id", TaskController.getCategoryById);
 
 export default taskRouter;

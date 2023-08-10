@@ -1,70 +1,118 @@
 import _ from "lodash";
-import { User as UserRepository } from "../config/database";
-import { ObjectId } from "mongodb";
+import mongoose, { Schema } from "mongoose";
+
+const UserSchema = new Schema({
+  name: {
+    type: Schema.Types.String,
+    required: true,
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    select: false, // hiden field pass khi get list user
+  },
+  code: {
+    type: String,
+    default: null,
+    unique: true,
+  },
+});
+
+export const UserModel = mongoose.model("User", UserSchema);
 
 const paginate = (query) => {
-  return UserRepository.paginate(query);
+  return UserModel.paginate(query);
 };
 
-const find = async (query) => {
-  let _query = _.omit(query, "name", "age");
-
-  if (query.age) {
-    _query.age = query.age;
-  }
-
-  if (query.name) {
-    // c1 search basic
-    // _query.name = { $regex: new RegExp(query.name, "i") }; // "i": k pb hoa thuong
-    // c2 search advance k dau, $text: config ở datadase.js
-    _query.$text = { $search: query.name };
-  }
-
-  return await UserRepository.find(_query).toArray();
-};
+const find = async (query) => {};
 
 const findById = async (id) => {
-  if (ObjectId.isValid(id)) {
-    return await UserRepository.findOne({ _id: new ObjectId(id) });
+  if (mongoose.isValidObjectId(id)) {
+    try {
+      const user = await UserModel.findById(id);
+      return user;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
-
   return null;
-  // return users.find((e) => e.id === parseInt(id));
 };
 
-const findByIds = (ids) => {
-  return users.filter((e) => ids.includes(e.id));
-};
 const create = async (data) => {
-  const result = await UserRepository.insertOne(data);
-  if (result.insertedId) {
-    data._id = result.insertedId;
-    return data;
+  const newUser = new UserModel(data);
+  try {
+    await newUser.save();
+    return newUser;
+  } catch (error) {
+    console.error(error);
+    return false;
   }
-  return false;
 };
+
 const updateById = async (id, dataUpdate) => {
-  if (ObjectId.isValid(id)) {
-    let result = await UserRepository.updateOne(
-      { _id: new ObjectId(id) },
-      {
-        $set: dataUpdate,
-      }
-    );
-    // return result.modifiedCount >= 1;
-    return dataUpdate;
+  if (mongoose.isValidObjectId(id)) {
+    try {
+      const result = await UserModel.updateOne(
+        { _id: id },
+        { $set: dataUpdate }
+      );
+      // return result;
+      return dataUpdate;
+    } catch (error) {
+      return false;
+    }
   }
-
   return false;
 };
+
+// c2 using findByIdAndUpdate
+// const updateById = async (id, dataUpdate) => {
+//   if (mongoose.isValidObjectId(id)) {
+//     try {
+//       const updatedUser = await UserModel.findByIdAndUpdate(id, dataUpdate, {
+//         new: true,
+//       });
+//       return !!updatedUser;
+//     } catch (error) {
+//       console.error(error);
+//       return false;
+//     }
+//   }
+//   return false;
+// };
+
 const deleteById = async (id) => {
-  if (ObjectId.isValid(id)) {
-    let result = await UserRepository.deleteOne({ _id: new ObjectId(id) });
-    return result.modifiedCount >= 1;
+  if (mongoose.isValidObjectId(id)) {
+    try {
+      const result = await UserModel.deleteOne({ _id: id });
+      return result.deletedCount >= 1;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
-
   return false;
 };
+
+// c2 using findByIdAndDelete
+// const deleteById = async (id) => {
+//   if (mongoose.isValidObjectId(id)) {
+//     try {
+//       const deletedUser = await User.findByIdAndDelete(id);
+//       return !!deletedUser;
+//     } catch (error) {
+//       console.error(error);
+//       return false;
+//     }
+//   }
+//   return false;
+// };
 
 export const User = {
   paginate,
@@ -73,5 +121,4 @@ export const User = {
   create,
   updateById,
   deleteById,
-  findByIds,
 };

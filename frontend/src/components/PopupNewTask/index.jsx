@@ -32,8 +32,8 @@ export const PopupNewTask = ({ setOpenCreate, open, item, setItem }) => {
       message.loading({ key: item?.id, content: "Đang tạo task" });
     },
     mutationFn: (value) => {
-      return axiosInstance.post("/task", value);
-      // console.log(value);
+      console.log(value);
+      // return axiosInstance.post("/task", value);
     },
     onSuccess: () => {
       message.success({ key: item?.id, content: "Tạo task thành công" });
@@ -72,7 +72,6 @@ export const PopupNewTask = ({ setOpenCreate, open, item, setItem }) => {
     queryKey: [LIST_CATEGORY],
     queryFn: categoryService.getCategories,
   });
-
   // get users
   const { data: users } = useQuery({
     queryKey: [LIST_USER],
@@ -136,13 +135,13 @@ export const PopupNewTask = ({ setOpenCreate, open, item, setItem }) => {
 
             {/* form category */}
             <Form.Item
-              rules={[{ required: true }]}
+              // rules={[{ required: true }]}
               name="category"
               label="Category"
             >
               <SelectTag
                 options={
-                  categories?.data?.map((item) => ({
+                  categories?.data?.data?.map((item) => ({
                     label: item.name,
                     value: item.id,
                     color: item.color,
@@ -181,7 +180,7 @@ export const PopupNewTask = ({ setOpenCreate, open, item, setItem }) => {
             >
               <DropdownSelect
                 options={
-                  users?.data?.map((item) => ({
+                  users?.data?.data?.map((item) => ({
                     ...item,
                     value: item.id,
                     label: (

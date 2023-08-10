@@ -73,4 +73,12 @@ export class HttpResponse {
       error_code: "NOT_FOUND",
     };
   }
+
+  static delete(message = "Xoá thành công") {
+    return {
+      status: "Success",
+      code: 204,
+      message,
+    };
+  }
 }

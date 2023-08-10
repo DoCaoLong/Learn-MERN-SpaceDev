@@ -13,11 +13,12 @@ import fs from "fs";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import helmet from "helmet";
-import { NotFound } from "./src/config/statusCode";
 import { pageRouter } from "./src/routes/page.route";
 import handlebars from "express-handlebars";
-import { xTokenMiddleware } from "./src/middleware/x-token-middleware";
-import "./src/config/database";
+// import { xTokenMiddleware } from "./src/middleware/x-token-middleware";
+// import "./src/config/database";
+import "./src/config/mongoose";
+import { authRouter } from "./src/routes/auth.route";
 
 const app = express();
 
@@ -85,6 +86,8 @@ app.use("/categories", categoryRouter);
 app.use("/user", userRouter);
 
 app.use("/file", fileRouter);
+
+app.use("/auth", authRouter);
 
 app.use(pageRouter);
 
