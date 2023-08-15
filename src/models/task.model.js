@@ -40,7 +40,7 @@ const TaskSchema = new mongoose.Schema(
 
 TaskSchema.index({ title: "text", description: "text" });
 
-const TaskModel = mongoose.model("Task", TaskSchema);
+export const TaskModel = mongoose.model("Task", TaskSchema);
 
 const paginate = async (query) => {
   return TaskModel.paginate(query);
@@ -109,8 +109,12 @@ const updateById = async (id, dataUpdate) => {
 const deleteById = async (id) => {
   if (mongoose.isValidObjectId(id)) {
     try {
-      let task = await TaskModel.deleteOne({ _id: id });
-      return task;
+      let task = await TaskModel.updateOne(
+        { _id: id },
+        { deletedAt: new Date() }
+      );
+      // return task;
+      return task.modifiedCount >= 1;
     } catch (error) {
       console.error(error);
       return false;

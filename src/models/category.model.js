@@ -12,7 +12,7 @@ const CategorySchema = new Schema({
   },
 });
 
-const CategoryModel = mongoose.model("Category", CategorySchema);
+export const CategoryModel = mongoose.model("Category", CategorySchema);
 
 const paginate = async (query) => {
   return CategoryModel.paginate(query);
@@ -26,7 +26,7 @@ const find = async (query) => {
   // return await CategoryRepository.find(_query).toArray();
 };
 
-const findById = async (id) => {
+export const findById = async (id) => {
   if (mongoose.isValidObjectId(id)) {
     try {
       const category = await CategoryModel.findOne({ _id: id });

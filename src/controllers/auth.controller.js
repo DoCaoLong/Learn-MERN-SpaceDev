@@ -17,7 +17,7 @@ export const AuthController = {
     let user = await UserModel.findOne({
       email,
       password,
-      // verify: true,
+      verify: true,
     });
     if (user) {
       let accessToken = jsonwebtoken.sign({ _id: user._id }, AUTH.SECRET_KEY, {

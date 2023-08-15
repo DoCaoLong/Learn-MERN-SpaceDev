@@ -16,11 +16,21 @@ const UserSchema = new Schema({
     required: true,
     select: false, // hiden field pass khi get list user
   },
+  verify: {
+    type: Boolean,
+    default: false,
+  },
   code: {
     type: String,
     default: null,
     unique: true,
   },
+  tasks: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Task",
+    },
+  ],
 });
 
 export const UserModel = mongoose.model("User", UserSchema);

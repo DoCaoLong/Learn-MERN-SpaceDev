@@ -16,7 +16,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/configs/api";
 import { IconDot } from "@/assets/img/iconDot";
 import { queryClient } from "@/main";
-import { LIST_TASK, LIST_CATEGORY } from "@/configs/queryKey";
+import { LIST_TASK, LIST_CATEGORY, LIST_USER } from "@/configs/queryKey";
 export const Home = () => {
   const [openCreate, setOpenCreate] = useState(false);
   const [item, setItem] = useState({});
@@ -24,6 +24,7 @@ export const Home = () => {
     queryKey: [LIST_TASK],
     queryFn: () => axiosInstance.get("/task"),
   });
+
   return (
     <div className="max-w-[600px] p-10 mx-auto ">
       <Button
@@ -59,22 +60,35 @@ export const Home = () => {
 };
 
 const ToDoCard = ({ item, className, setItem, setOpenCreate }) => {
-  const { title, description, id, key } = item;
+  const { title, description } = item;
   const { mutate } = useMutation({
     onMutate: () => {
-      message.loading({ key: id, content: "Đang xoá task..." });
+      message.loading({ key: item.id, content: "Đang xoá task..." });
     },
     mutationFn: () => {
       return axiosInstance.delete(`/task/${id}`);
     },
     onSuccess: () => {
-      message.success({ key: id, content: "Xoá task thành công" });
+      message.success({ key: item.id, content: "Xoá task thành công" });
       queryClient.invalidateQueries([LIST_TASK]);
     },
     onError: () => {
-      message.error({ key: id, content: "Xoá task thất bại" });
+      message.error({ key: item.id, content: "Xoá task thất bại" });
     },
   });
+
+  // const { data: categorys } = useQuery({
+  //   queryKey: [LIST_CATEGORY],
+  //   queryFn: () => axiosInstance.get(`/categories/${item.id}`),
+  // });
+  // console.log(categorys);
+
+  const { data: users } = useQuery({
+    queryKey: [LIST_USER],
+    queryFn: () => axiosInstance.get(`/user`),
+  });
+  console.log(users);
+
   return (
     <div
       key={item.id}
@@ -83,7 +97,7 @@ const ToDoCard = ({ item, className, setItem, setOpenCreate }) => {
     >
       <h3 className="text-lg font-[600] flex items-center">
         <span className="mr-2">{title}</span>
-        <Tag color={item?.category?.color}>{item?.category?.name}</Tag>
+        {/* <Tag color={categorys?.color}>{categorys?.name}</Tag> */}
       </h3>
       <p className="text-sm text-gray-500 mt-1">{description}</p>
       <div className="text-blue-400 cursor-pointer mt-2 pb-3 border-0 border-solid border-b border-gray-300">
@@ -95,7 +109,7 @@ const ToDoCard = ({ item, className, setItem, setOpenCreate }) => {
         </div>
         <div>
           <Avatar.Group>
-            {item?.users?.map((item) => (
+            {users?.data?.data?.map((item) => (
               <Tooltip key={item.id} title={item?.name}>
                 <Avatar
                   size={35}

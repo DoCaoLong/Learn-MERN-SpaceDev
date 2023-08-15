@@ -1,3 +1,4 @@
+import "./src/config/mongoose";
 import express from "express";
 import { config } from "dotenv";
 import cors from "cors";
@@ -17,7 +18,6 @@ import { pageRouter } from "./src/routes/page.route";
 import handlebars from "express-handlebars";
 // import { xTokenMiddleware } from "./src/middleware/x-token-middleware";
 // import "./src/config/database";
-import "./src/config/mongoose";
 import { authRouter } from "./src/routes/auth.route";
 
 const app = express();
@@ -93,10 +93,10 @@ app.use(pageRouter);
 
 app.use(errorMiddleware);
 
-app.all("*", (req, res) => {
-  // res.status(NotFound).json({ error: "File Not Found" });
-  res.render("404");
-});
+// app.all("*", (req, res) => {
+//   // res.status(NotFound).json({ error: "File Not Found" });
+//   res.render("404");
+// });
 
 app.listen(port, () => {
   console.log("Server run at port:", port);

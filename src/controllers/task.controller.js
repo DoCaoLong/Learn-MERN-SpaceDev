@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { BadRequest, Created, NoContent, Success } from "../config/statusCode";
-import { Task } from "../models/task.model";
+import { Task, TaskModel } from "../models/task.model";
 import { HttpResponse } from "../utils/HttpResponse";
 
 export const TaskController = {
@@ -15,6 +15,9 @@ export const TaskController = {
 
   get: async (req, res) => {
     res.json(HttpResponse.Paginate(await Task.paginate(req.query)));
+    // const result = await TaskModel.find().populate("users");
+    // console.log(result);
+    // res.json({ result });
   },
 
   getDetail: async (req, res) => {
@@ -96,7 +99,7 @@ export const TaskController = {
     const { id } = req.params;
     let check = await Task.deleteById(id);
     if (check) {
-      res.status(NoContent).json(HttpResponse.delete);
+      res.status(NoContent).json({ Delete: true });
     } else {
       res.status(BadRequest).json({ error: "Task not found" });
     }
