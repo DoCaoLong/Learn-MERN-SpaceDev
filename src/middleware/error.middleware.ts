@@ -3,8 +3,14 @@ import moment from "moment";
 import fs from "fs";
 import { BadRequest } from "../config/statusCode";
 import { HttpResponse } from "../utils/HttpResponse";
+import { NextFunction, Request, Response } from "express";
 
-export const errorMiddleware = (err, req, res, next) => {
+export const errorMiddleware = (
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   let log = `\n${req.method}: ${req.url} - ${moment().format(
     "DD/MM/YYYY"
   )}: ${JSON.stringify(req.body)} - ${err}`;
